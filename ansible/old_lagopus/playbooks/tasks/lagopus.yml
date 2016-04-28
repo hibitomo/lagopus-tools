@@ -22,6 +22,7 @@
   git:
     repo=https://github.com/lagopus/lagopus
     dest={{ work_dir }}/lagopus
+    version=v0.2.2
   register: clone_lagopus
 - name: Check if lagopus exists
   stat: path=/usr/local/sbin/lagopus
