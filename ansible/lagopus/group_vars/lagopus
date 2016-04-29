@@ -1,0 +1,66 @@
+---
+# The variables file used by the playbooks in the lagopus group.
+
+lagopus:
+  repository: https://github.com/lagopus/lagopus
+  version: v0.2.5
+  configure_option:
+  make_option: gcc-full-opt
+
+dpdk:
+  setup: true
+  ifaces: []
+#   ifaces:
+#     - eth0
+#     - eth1
+
+hugepage:
+  setup: true
+  size: 2048
+  nodes:
+    - id: 0
+      number_of_pages: 512
+#     - id: 1
+#       number_of_pages: 512
+
+# For OpenFlow
+channels:
+  - name: channel01
+    dst_addr: 127.0.0.1
+    protocol: tcp
+
+controllers:
+  - name: controller01
+    channel: channel01
+    role: equal
+    connection_type: main
+
+# dpdk_interfaces: []
+dpdk_interfaces:
+  - name: interface00
+    port_number: 0
+  - name: interface01
+    port_number: 1
+
+rawsock_interfaces: []
+# rawsock_interfaces:
+#   - name: interface00
+#     device: veth0
+#   - name: interface01
+#     device: veth1
+
+ports:
+  - name: port01
+    interface: interface00
+  - name: port02
+    interface: interface01
+
+bridges:
+  - name: bridge01
+    controller: controller01
+    dpid: 0x01
+    ports:
+      - name: port01
+        OF_port: 1
+      - name: port02
+        OF_port: 2

@@ -1,0 +1,38 @@
+- modprobe: name=uio state=present
+  sudo: yes
+
+- shell: "rmmod igb_uio"
+  sudo: yes
+  changed_when: no
+  failed_when: no
+  when: git_res|changed
+
+- shell: "rmmod rte_kni"
+  sudo: yes
+  changed_when: no
+  failed_when: no
+  when: git_res|changed
+
+- shell: "insmod {{ src_dir }}/lagopus/src/dpdk/build/kmod/igb_uio.ko"
+  register: res
+  changed_when: no
+  failed_when: "'No such file or directory' in res.stderr"
+  sudo: yes
+
+- shell: "insmod {{ src_dir }}/lagopus/src/dpdk/build/kmod/rte_kni.ko"
+  register: res
+  changed_when: no
+  failed_when: "'No such file or directory' in res.stderr"
+  sudo: yes
+
+- shell: "ip link set down dev {{ item }}"
+  with_items: dpdk.ifaces
+  changed_when: no
+  failed_when: no
+  sudo: yes
+
+- shell: "{{ src_dir }}/lagopus/src/dpdk/tools/dpdk_nic_bind.py -b igb_uio {{ item }}"
+  with_items: dpdk_ifaces
+  changed_when: no
+  failed_when: no
+  sudo: yes

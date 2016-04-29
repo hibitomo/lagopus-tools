@@ -1,0 +1,8 @@
+---
+
+# Setup lagopus
+- hosts: lagopus
+  remote_user: "{{ user }}"
+  roles:
+    - lagopus
+    - ryu

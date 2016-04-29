@@ -1,0 +1,76 @@
+- name: Install packages for Lagopus
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    state: present
+  with_items:
+    - git
+    - build-essential
+    - libexpat1-dev
+    - libgmp-dev
+    - libssl-dev
+    - libpcap-dev
+    - byacc
+    - flex
+    - python-dev
+    - python-pastedeploy
+    - python-paste
+    - python-twisted
+  environment: "{{ proxy_env }}"
+  sudo: yes
+
+- name: Check if lagopus exists
+  stat: path=/usr/local/sbin/lagopus
+  register: lagopus_exists
+
+- name: Clone Lagopus from Github
+  git:
+    repo: "{{ lagopus.repository }}"
+    version: "{{ lagopus.version }}"
+    dest: "{{ src_dir }}/lagopus"
+  environment: "{{ proxy_env }}"
+  register: git_res
+  sudo: yes
+  changed_when: git_res.before != git_res.after
+
+- name: configure lagopus
+  shell:
+    ./configure {{ lagopus.configure_option }}
+    chdir={{ src_dir }}/lagopus
+  sudo: yes
+  register: configure_lagopus
+  when: git_res|changed
+
+- name: make lagopus
+  shell:
+    make {{ lagopus.make_option }}
+    chdir={{ src_dir }}/lagopus
+  sudo: yes
+  when: git_res|changed
+
+- name: make install lagopus
+  shell:
+    make install
+    chdir={{ src_dir }}/lagopus
+  sudo: yes
+  when: git_res|changed
+
+- name: lagopus config file directory
+  file: path=/usr/local/etc/lagopus state=directory owner=root group=root mode=0755
+  sudo: yes
+
+## setup DPDK
+
+- include: hugepage.yml
+  when: hugepage.setup == true
+
+- include: dpdk.yml
+  when: dpdk.setup == true
+
+# make lagopus.dsl
+
+- name: make lagopus.dsl
+  template:
+    src: lagopus.dsl.j2
+    dest: /usr/local/etc/lagopus/lagopus.dsl
+  sudo: yes
