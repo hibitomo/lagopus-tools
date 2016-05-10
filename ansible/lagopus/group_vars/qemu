@@ -1,0 +1,7 @@
+---
+
+qemu:
+  repository: "https://github.com/qemu/qemu"
+  version: "stable-2.5"
+  configure_option: "--target-list=x86_64-softmmu --prefix=/usr/local"
+  make_option:

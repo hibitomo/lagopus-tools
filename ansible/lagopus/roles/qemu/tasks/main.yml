@@ -1,0 +1,55 @@
+- name: Install packages for QEMU
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    state: present
+  with_items:
+    - git
+    - pkg-config
+    - libglib2.0-dev
+    - zlib1g-dev
+    - autoconf
+    - libtool
+    - bison
+  environment: "{{ proxy_env }}"
+  sudo: yes
+
+- shell:
+    git config --global url."https://github.com/qemu/".insteadOf git://git.qemu-project.org/ ;
+    git config --global url."https://anongit.freedesktop.org/git/pixman.git".insteadOf git://anongit.freedesktop.org/pixman ;
+    git config --global url."https://".insteadOf git:// ;
+  changed_when: no
+  sudo: yes
+
+- name: Clone Qemu from Github
+  git:
+    repo: "{{ qemu.repository }}"
+    version: "{{ qemu.version }}"
+    dest: "{{ src_dir }}/qemu"
+    force: yes
+  environment: "{{ proxy_env }}"
+  register: git_res
+  sudo: yes
+  changed_when: git_res.before != git_res.after
+
+- name: configure qemu
+  shell:
+    ./configure {{ qemu.configure_option }}
+    chdir={{ src_dir }}/qemu
+  sudo: yes
+  register: configure_qemu
+  when: git_res|changed
+
+- name: make qemu
+  shell:
+    make {{ qemu.make_option }}
+    chdir={{ src_dir }}/qemu
+  sudo: yes
+  when: git_res|changed
+
+- name: make install qemu
+  shell:
+    make install
+    chdir={{ src_dir }}/qemu
+  sudo: yes
+  when: git_res|changed
