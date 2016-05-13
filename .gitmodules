@@ -1,0 +1,3 @@
+[submodule "lago-dsl"]
+	path = lago-dsl
+	url = https://github.com/hibitomo/lago-dsl
