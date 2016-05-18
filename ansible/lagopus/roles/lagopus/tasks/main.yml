@@ -61,18 +61,20 @@
 
 ## setup DPDK
 
-- shell: >
+- name: Setup the number of hugepages
+  shell: >
     cat /sys/devices/system/node/node{{ item.id }}/hugepages/hugepages-{{ hugepage.size }}kB/nr_hugepages
     && echo {{ item.number_of_pages }} > /sys/devices/system/node/node{{ item.id }}/hugepages/hugepages-{{ hugepage.size }}kB/nr_hugepages
   with_items: "{{ hugepage.nodes }}"
   register: result
   sudo: yes
-  when: {{ hugepage.setup }} == yes
+  when: hugepage.setup == true
   changed_when: result.stdout != "{{ item.number_of_pages }}"
 
 - file: path=/mnt/huge state=directory owner=root group=root mode=0755 recurse=yes
   sudo: yes
-- mount: name=/mnt/huge fstype=hugelbfs src=nodev state=present
+- name: Mount hugepage
+  mount: name=/mnt/huge fstype=hugelbfs src=nodev state=present
   sudo: yes
 
 - include: dpdk.yml
