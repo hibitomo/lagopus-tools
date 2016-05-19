@@ -1,38 +1,45 @@
-- modprobe: name=uio state=present
-  sudo: yes
+- name: modprobe uio
+  modprobe: name=uio state=present
+  become: yes
 
-- shell: "rmmod igb_uio"
-  sudo: yes
+- name: rmmod igb_uio
+  shell: "rmmod igb_uio"
+  become: yes
   changed_when: no
   failed_when: no
-  when: git_res|changed
+  when: lagopus.compile == true
 
-- shell: "rmmod rte_kni"
-  sudo: yes
+- name: rmmod rte_kni
+  shell: "rmmod rte_kni"
+  become: yes
   changed_when: no
   failed_when: no
-  when: git_res|changed
+  when: lagopus.compile == true
 
-- shell: "insmod {{ src_dir }}/lagopus/src/dpdk/build/kmod/igb_uio.ko"
+- name: insmod igb_uio.ko
+  shell: "insmod {{ lagopus.src_dir }}/src/dpdk/build/kmod/igb_uio.ko"
   register: res
   changed_when: no
   failed_when: "'No such file or directory' in res.stderr"
-  sudo: yes
+  become: yes
 
-- shell: "insmod {{ src_dir }}/lagopus/src/dpdk/build/kmod/rte_kni.ko"
+- name: insmod rte_kni.ko
+  shell: "insmod {{ lagopus.src_dir }}/src/dpdk/build/kmod/rte_kni.ko"
   register: res
   changed_when: no
   failed_when: "'No such file or directory' in res.stderr"
-  sudo: yes
+  become: yes
 
-- shell: "ip link set down dev {{ item }}"
-  with_items: dpdk.ifaces
+- name: link down intarfaces to bind dpdk
+  shell: "ip link set down dev {{ item }}"
+  with_items: dpdk_ifaces.physical
   changed_when: no
   failed_when: no
-  sudo: yes
+  become: yes
 
-- shell: "{{ src_dir }}/lagopus/src/dpdk/tools/dpdk_nic_bind.py -b igb_uio {{ item }}"
-  with_items: dpdk_ifaces
+- name: bind dpdk
+  shell: "{{ lagopus.src_dir }}/src/dpdk/tools/dpdk_nic_bind.py -b igb_uio {{ item }}"
+  with_items: dpdk_ifaces.physical
   changed_when: no
   failed_when: no
-  sudo: yes
+  become: yes

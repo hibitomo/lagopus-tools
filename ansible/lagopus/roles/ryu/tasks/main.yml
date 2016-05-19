@@ -9,16 +9,16 @@
     - libxml2-dev
     - libxslt1-dev
   environment: "{{ proxy_env }}"
-  sudo: yes
+  become: yes
 - name: Install Ryu with pip
   pip:
     name: ryu
     version: "{{ ryu_version }}"
   environment: "{{ proxy_env }}"
-  sudo: yes
+  become: yes
 - name: Update six to the latest version
   pip:
     name: six
     state: latest
   environment: "{{ proxy_env }}"
-  sudo: yes
+  become: yes

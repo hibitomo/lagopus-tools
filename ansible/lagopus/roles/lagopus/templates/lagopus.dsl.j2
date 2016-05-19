@@ -1,24 +1,21 @@
-{% for channel in channels %}
-channel {{ channel.name }} create -dst-addr {{ channel.dst_addr }} -protocol {{ channel.protocol }}
+{% for controller in lagopus.controllers %}
+channel {{ controller.name }}-channel create -dst-addr {{ controller.channel.dst_addr }} -protocol {{ controller.channel.protocol }}
+controller {{ controller.name }} create -channel {{ controller.name }}-channel -role {{ controller.role }} -connection-type {{ controller.connection_type }}
 {% endfor %}
 
-{% for controller in controllers %}
-controller {{ controller.name }} create -channel {{ controller.channel }} -role {{ controller.role }} -connection-type {{ controller.connection_type }}
-{% endfor %}
-
-{% for interface in dpdk_interfaces %}
+{% for interface in lagopus.dpdk_interfaces %}
 interface {{ interface.name }} create -type ethernet-dpdk-phy -port-number {{ interface.port_number }}
 {% endfor %}
 
-{% for interface in rawsock_interfaces %}
+{% for interface in lagopus.rawsock_interfaces %}
 interface {{ interface.name }} create -type ethernet-rawsock -device {{ interface.device }}
 {% endfor %}
 
-{% for port in ports %}
+{% for port in lagopus.ports %}
 port {{ port.name }} create -interface {{ port.interface }}
 {% endfor %}
 
-{% for bridge in bridges %}
+{% for bridge in lagopus.bridges %}
 bridge {{ bridge.name }} create -controller {{ bridge.controller }} {% for port in bridge.ports %} -port {{ port.name }} {{ port.OF_port }} {% endfor %} -dpid {{ bridge.dpid }}
 bridge {{ bridge.name }} enable
 {% endfor %}

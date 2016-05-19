@@ -1,3 +1,5 @@
+## setup Lagopus
+
 - name: Install packages for Lagopus
   apt:
     name: "{{ item }}"
@@ -17,73 +19,76 @@
     - python-paste
     - python-twisted
   environment: "{{ proxy_env }}"
-  sudo: yes
-
-- name: Check if lagopus exists
-  stat: path=/usr/local/sbin/lagopus
-  register: lagopus_exists
+  become: yes
 
 - name: Clone Lagopus from Github
   git:
     repo: "{{ lagopus.repository }}"
     version: "{{ lagopus.version }}"
-    dest: "{{ src_dir }}/lagopus"
+    dest: "{{ lagopus.src_dir }}"
   environment: "{{ proxy_env }}"
-  register: git_res
-  sudo: yes
-  changed_when: git_res.before != git_res.after
+  register: res
+  become: yes
+  changed_when: res.before != res.after
+  when: lagopus.compile == true
 
 - name: configure lagopus
   shell:
     ./configure {{ lagopus.configure_option }}
-    chdir={{ src_dir }}/lagopus
-  sudo: yes
+    chdir={{ lagopus.src_dir }}
+  become: yes
   register: configure_lagopus
-  when: git_res|changed
+  changed_when: no
+  when: lagopus.compile == true
 
 - name: make lagopus
   shell:
     make {{ lagopus.make_option }}
-    chdir={{ src_dir }}/lagopus
-  sudo: yes
-  when: git_res|changed
+    chdir={{ lagopus.src_dir }}
+  become: yes
+  changed_when: no
+  when: lagopus.compile == true
 
 - name: make install lagopus
   shell:
     make install
-    chdir={{ src_dir }}/lagopus
-  sudo: yes
-  when: git_res|changed
+    chdir={{ lagopus.src_dir }}
+  become: yes
+  changed_when: no
+  when: lagopus.compile == true
 
 - name: lagopus config file directory
   file: path=/usr/local/etc/lagopus state=directory owner=root group=root mode=0755
-  sudo: yes
+  become: yes
 
-## setup DPDK
+
+## setup Hugepages
 
 - name: Setup the number of hugepages
   shell: >
-    cat /sys/devices/system/node/node{{ item.id }}/hugepages/hugepages-{{ hugepage.size }}kB/nr_hugepages
-    && echo {{ item.number_of_pages }} > /sys/devices/system/node/node{{ item.id }}/hugepages/hugepages-{{ hugepage.size }}kB/nr_hugepages
+    cat /sys/devices/system/node/node{{ item.id }}/hugepages/hugepages-{{ hugepage.size }}/nr_hugepages
+    && echo {{ item.number_of_pages }} > /sys/devices/system/node/node{{ item.id }}/hugepages/hugepages-{{ hugepage.size }}/nr_hugepages
   with_items: "{{ hugepage.nodes }}"
   register: result
-  sudo: yes
+  become: yes
   when: hugepage.setup == true
   changed_when: result.stdout != "{{ item.number_of_pages }}"
 
 - file: path=/mnt/huge state=directory owner=root group=root mode=0755 recurse=yes
-  sudo: yes
+  become: yes
 - name: Mount hugepage
   mount: name=/mnt/huge fstype=hugelbfs src=nodev state=present
-  sudo: yes
+  become: yes
+
+## setup DPDK
 
 - include: dpdk.yml
-  when: dpdk.setup == true
 
-# make lagopus.dsl
+
+## make lagopus.dsl
 
 - name: make lagopus.dsl
   template:
     src: lagopus.dsl.j2
     dest: /usr/local/etc/lagopus/lagopus.dsl
-  sudo: yes
+  become: yes
