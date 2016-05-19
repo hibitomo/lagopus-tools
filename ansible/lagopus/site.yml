@@ -5,7 +5,6 @@
   remote_user: "{{ user }}"
   roles:
     - lagopus
-    # - qemu
 
 # Setup ryu
 - hosts: ryu
