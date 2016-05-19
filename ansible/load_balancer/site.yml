@@ -1,0 +1,8 @@
+---
+
+# Setup load_balancer
+- hosts: load_balancer
+  remote_user: "{{ user }}"
+  roles:
+    - ../lagopus/roles/lagopus
+    - ../lagopus/roles/qemu
