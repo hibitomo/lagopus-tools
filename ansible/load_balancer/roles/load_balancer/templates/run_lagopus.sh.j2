@@ -1,0 +1,12 @@
+#!/bin/bash
+
+{% for vhost_user in dpdk_ifaces.vhost_user %}
+sudo rm {{ vhost_user.socket }}
+{% endfor %}
+
+sudo lagopus -C {{ lagopus.dsl }} -l {{ lagopus.log }} \
+  -- -c {{ lagopus.cpumask }} -n {{ lagopus.memory_channels }} -m {{ lagopus.allocate_hugepages }} \
+  {% for vhost_user in dpdk_ifaces.vhost_user %}
+  --vdev 'eth_vhost{{ vhost_user.id }},iface={{ vhost_user.socket }}' \
+  {% endfor %}
+-- -p {{ lagopus.portmask }} \

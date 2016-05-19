@@ -1,0 +1,14 @@
+- name: install qemu
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    state: present
+  with_items:
+    - qemu-kvm
+    - qemu-system-x86
+  become: yes
+- name: make lagopus start_script
+  template:
+    src: run_lagopus.sh.j2
+    dest: "{{ run_lagpous_script }}"
+
