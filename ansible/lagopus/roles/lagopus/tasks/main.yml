@@ -67,7 +67,7 @@
   with_items: "{{ hugepage.nodes }}"
   register: result
   sudo: yes
-  when: {{ hugepage.setup }} == yes
+  when: hugepage.setup == true
   changed_when: result.stdout != "{{ item.number_of_pages }}"
 
 - file: path=/mnt/huge state=directory owner=root group=root mode=0755 recurse=yes

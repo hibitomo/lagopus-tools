@@ -15,7 +15,7 @@ dpdk:
 #     - eth1
 
 hugepage:
-  setup: yes
+  setup: true
   size: 2048
   nodes:
     - id: 0
