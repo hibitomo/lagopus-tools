@@ -5,4 +5,8 @@
   remote_user: "{{ user }}"
   roles:
     - ../lagopus/roles/lagopus
-    - ../lagopus/roles/qemu
+    - load_balancer
+
+- hosts: vnf
+  remote_user: "{{ user }}"
+  roles: []
