@@ -5,4 +5,10 @@
   remote_user: "{{ user }}"
   roles:
     - lagopus
+    # - qemu
+
+# Setup ryu
+- hosts: ryu
+  remote_user: "{{ user }}"
+  roles:
     - ryu
