@@ -3,6 +3,3 @@ localhost
 
 [ryu]
 localhost
-
-[qemu]
-localhost
