@@ -37,6 +37,19 @@ qemu_option:
       - id: 0
         image: ~/images/ubuntu0.img
     option: "-M pc-1.9 -cpu host -enable-kvm -numa node,memdev=mem"
+  - id: 1
+    core: 2
+    memory: 1024
+    vnc: 0.0.0.0:1
+    hugepage_path: /mnt/huge
+    dpdk_ifaces:
+      - id: 0
+        vhost_socket: /tmp/sock1
+        mac: "52:54:00:00:00:02"
+    drive:
+      - id: 0
+        image: ~/images/ubuntu1.img
+    option: "-M pc-1.9 -cpu host -enable-kvm -numa node,memdev=mem"
 
 lagopus:
   compile: true
