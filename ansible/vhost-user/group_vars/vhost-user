@@ -1,5 +1,5 @@
 ---
-# The variables file used by the playbooks in the load_balancers group
+# The variables file used by the playbooks in the lagopus with vhost-user group
 
 run_lagpous_script: ~/run_lagopus.sh
 
@@ -13,27 +13,17 @@ hugepage:
 #      number_of_pages: 512
 
 dpdk_ifaces:
-# vhost_user: []
   vhost_user:
     - id: 0
       socket: /tmp/sock0
     - id: 1
       socket: /tmp/sock1
-    - id: 2
-      socket: /tmp/sock2
-    - id: 3
-      socket: /tmp/sock3
   pipe: []
-#  pipe:
-#    - id: 0
-#    - id: 1
-#  physical: []
   pysical:
      - 0000:05:00.0
-     - 0000:05:00.1
 
 lagopus:
-  compile: true
+  compile: false
   repository: https://github.com/lagopus/lagopus-next-virtio
   version: master
   configure_option:
@@ -41,7 +31,7 @@ lagopus:
   src_dir: /usr/local/src/lagopus
   cpumask: e
   memory_channels: 4
-  portmask: 3f
+  portmask: 7
   allocate_hugepages: 1024 # MB
   dsl: /usr/local/etc/lagopus/lagopus.dsl
   log: /tmp/lagopus.log
@@ -54,7 +44,6 @@ lagopus:
       role: equal
       connection_type: main
 
-  # dpdk_interfaces: []
   dpdk_interfaces:
     - name: interface00
       port_number: 0
@@ -62,19 +51,8 @@ lagopus:
       port_number: 1
     - name: interface02
       port_number: 2
-    - name: interface03
-      port_number: 3
-    - name: interface04
-      port_number: 4
-    - name: interface05
-      port_number: 5
 
   rawsock_interfaces: []
-  # rawsock_interfaces:
-  #   - name: interface00
-  #     device: veth0
-  #   - name: interface01
-  #     device: veth1
 
   ports:
     - name: port01
@@ -83,27 +61,15 @@ lagopus:
       interface: interface01
     - name: port03
       interface: interface02
-    - name: port04
-      interface: interface03
-    - name: port05
-      interface: interface04
-    - name: port06
-      interface: interface05
 
   bridges:
     - name: bridge01
       controller: controller01
       dpid: 0x01
       ports:
-        - name: port05
-          OF_port: 1
-        - name: port06
-          OF_port: 2
-        - name: port01
-          OF_port: 3
-        - name: port02
-          OF_port: 4
         - name: port03
-          OF_port: 5
-        - name: port04
-          OF_port: 6
+          OF_port: 1
+        - name: port01
+          OF_port: 2
+        - name: port02
+          OF_port: 3

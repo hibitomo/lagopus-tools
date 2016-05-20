@@ -1,0 +1,8 @@
+---
+
+# Setup lagopus with vhost-user
+- hosts: vhost-user
+  remote_user: "{{ user }}"
+  roles:
+    - ../lagopus/roles/lagopus
+    - vhost-user
