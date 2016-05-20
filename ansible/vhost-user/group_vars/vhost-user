@@ -2,6 +2,7 @@
 # The variables file used by the playbooks in the lagopus with vhost-user group
 
 run_lagpous_script: ~/run_lagopus.sh
+run_qemu_script: ~/run_qemu.sh
 
 hugepage:
   setup: true
@@ -22,8 +23,23 @@ dpdk_ifaces:
   pysical:
      - 0000:05:00.0
 
+qemu_option:
+  - id: 0
+    core: 2
+    memory: 1024
+    vnc: 0.0.0.0:0
+    hugepage_path: /mnt/huge
+    dpdk_ifaces:
+      - id: 0
+        vhost_socket: /tmp/sock0
+        mac: "52:54:00:00:00:01"
+    drive:
+      - id: 0
+        image: ~/images/ubuntu0.img
+    option: "-M pc-1.9 -cpu host -enable-kvm -numa node,memdev=mem"
+
 lagopus:
-  compile: false
+  compile: true
   repository: https://github.com/lagopus/lagopus-next-virtio
   version: master
   configure_option:

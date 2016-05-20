@@ -1,0 +1,19 @@
+#!/bin/bash
+
+{% for option in qemu_option %}
+sudo qemu-system-x86_64 \
+    {{ option.option }} \
+    -m {{ option.memory }} \
+    -object memory-backend-file,id=mem,size={{ option.memory }}M,mem-path={{ option.hugepage_path }},share=on \
+    -smp {{ option.core }} \
+    {% for drive in option.drive %}
+      -drive file={{ drive.image }},if=none,id=drive-virtio-disk{{ drive.id }},format=raw \
+      -device virtio-blk-pci,drive=drive-virtio-disk{{ drive.id }},id=virtio-disk0,bootindex=2 \
+    {% endfor %}
+    {% for iface in option.dpdk_ifaces %}
+      -chardev socket,id=chr{{ iface.id }},path={{ iface.vhost_socket}} \
+      -netdev vhost-user,id=hostnet{{ iface.id }},chardev=chr{{ iface.id }},vhostforce \
+      -device virtio-net-pci,netdev=hostnet{{ iface.id }},id=net{{ iface.id }},mac={{ iface.mac }},csum=off,gso=off,guest_tso4=off,guest_tso6=off,guest_ecn=off \
+     {% endfor %}
+   -vnc {{ option.vnc }} &
+{%endfor%}
