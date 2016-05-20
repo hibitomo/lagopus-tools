@@ -1,0 +1,17 @@
+## Setup mininet with lagopus
+
+- name: Clone mininet from github
+  git:
+    repo: "{{ mininet.repository }}"
+    version: "{{ mininet.version }}"
+    dest: "{{ mininet.src_dir }}"
+  environment: "{{ proxy_env }}"
+  register: res
+  become: yes
+
+- name: setup mininet
+  shell:
+     ./util/install.sh -n
+     chdir="{{ mininet.src_dir }}"
+  become: yes
+

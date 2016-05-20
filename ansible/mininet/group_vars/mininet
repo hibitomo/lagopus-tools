@@ -1,0 +1,30 @@
+---
+# The variables file used by the playbooks in the mininet with lagopus
+
+mininet:
+  repository: https://github.com/lagopus/mininet
+  version: lagopus
+  src_dir: /usr/local/src/mininet
+
+hugepage:
+  setup: false
+
+dpdk_ifaces:
+  vhost_user: []
+  pipe: []
+  pysical: []
+
+lagopus:
+  compile: true
+  repository: https://github.com/lagopus/lagopus
+  version: release-0.2.7
+  configure_option:
+  make_option: gcc-full-opt -j 4
+  src_dir: /usr/local/src/lagopus
+
+  controllers: []
+  dpdk_interfaces: []
+  rawsock_interfaces: []
+  ports: []
+  bridges: []
+  

@@ -1,0 +1,8 @@
+---
+
+# Setup mininet
+- hosts: mininet
+  remote_user: "{{ user }}"
+  roles:
+    - ../lagopus/roles/lagopus
+    - mininet
