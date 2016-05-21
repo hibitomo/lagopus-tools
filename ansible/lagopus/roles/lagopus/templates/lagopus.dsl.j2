@@ -18,3 +18,7 @@ port {{ port.interface }}-p create -interface {{ port.interface }}
 bridge {{ bridge.name }} create -controller {{ bridge.controller }} {% for port in bridge.ports %} -port {{ port.interface }}-p {{ port.OF_port }} {% endfor %} -dpid {{ bridge.dpid }}
 bridge {{ bridge.name }} enable
 {% endfor %}
+
+{% for flow in lagopus.flows %}
+flow {{ flow.bridge }} add priority={{ flow.priority }} {% for m in flow.match %}{{ m }} {% endfor %}apply_actions={{flow.apply_actions}}
+{% endfor %}

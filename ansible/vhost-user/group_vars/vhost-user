@@ -94,3 +94,5 @@ lagopus:
           interface: interface00
         - OF_port: 3
           interface: interface01
+
+  flows: []
