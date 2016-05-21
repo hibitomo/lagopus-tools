@@ -11,11 +11,10 @@ interface {{ interface.name }} create -type ethernet-dpdk-phy -port-number {{ in
 interface {{ interface.name }} create -type ethernet-rawsock -device {{ interface.device }}
 {% endfor %}
 
-{% for port in lagopus.ports %}
-port {{ port.name }} create -interface {{ port.interface }}
-{% endfor %}
-
 {% for bridge in lagopus.bridges %}
-bridge {{ bridge.name }} create -controller {{ bridge.controller }} {% for port in bridge.ports %} -port {{ port.name }} {{ port.OF_port }} {% endfor %} -dpid {{ bridge.dpid }}
+{% for port in bridge.ports %}
+port {{ port.interface }}-p create -interface {{ port.interface }}
+{% endfor %}
+bridge {{ bridge.name }} create -controller {{ bridge.controller }} {% for port in bridge.ports %} -port {{ port.interface }}-p {{ port.OF_port }} {% endfor %} -dpid {{ bridge.dpid }}
 bridge {{ bridge.name }} enable
 {% endfor %}

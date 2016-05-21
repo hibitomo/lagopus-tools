@@ -83,22 +83,14 @@ lagopus:
 
   rawsock_interfaces: []
 
-  ports:
-    - name: port01
-      interface: interface00
-    - name: port02
-      interface: interface01
-    - name: port03
-      interface: interface02
-
   bridges:
     - name: bridge01
       controller: controller01
       dpid: 0x01
       ports:
-        - name: port03
-          OF_port: 1
-        - name: port01
-          OF_port: 2
-        - name: port02
-          OF_port: 3
+        - OF_port: 1
+          interface: interface02
+        - OF_port: 2
+          interface: interface00
+        - OF_port: 3
+          interface: interface01
