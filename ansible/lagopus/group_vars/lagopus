@@ -10,18 +10,15 @@ hugepage:
 #    - id: 1
 #      number_of_pages: 512
 
-dpdk_ifaces:
-  vhost_user: []
+# dpdk_ifaces:
 #  vhost_user:
 #    - id: 0
 #      socket: /tmp/sock0
 #    - id: 1
 #      socket: /tmp/sock1
-  pipe: []
 #  pipe:
 #    - id: 0
 #    - id: 1
-  physical: []
 #  pysical:
 #     - 0000:05:00.0
 #     - 0000:05:00.1
@@ -42,14 +39,12 @@ lagopus:
       role: equal
       connection_type: main
 
-  # dpdk_interfaces: []
   dpdk_interfaces:
     - name: interface00
       port_number: 0
     - name: interface01
       port_number: 1
 
-  rawsock_interfaces: []
   # rawsock_interfaces:
   #   - name: interface00
   #     device: veth0
@@ -66,7 +61,6 @@ lagopus:
         - OF_port: 2
           interface: interface01
 
-#  flows: []
   flows:
     - bridge: bridge01
       priority: 100

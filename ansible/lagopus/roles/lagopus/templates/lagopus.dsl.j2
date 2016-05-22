@@ -10,13 +10,12 @@ channel {{ controller.name }}-channel create -dst-addr {{ controller.channel.dst
 controller {{ controller.name }} create -channel {{ controller.name }}-channel -role {{ controller.role }} -connection-type {{ controller.connection_type }}
 {% endfor %}
 
-{% for interface in lagopus.dpdk_interfaces %}
+{% if lagopus.dpdk_interfaces is defined %}{% for interface in lagopus.dpdk_interfaces %}
 interface {{ interface.name }} create -type ethernet-dpdk-phy -port-number {{ interface.port_number }}
-{% endfor %}
-
-{% for interface in lagopus.rawsock_interfaces %}
+{% endfor %}{% endif %}
+{% if lagopus.rawsock_interfaces is defined %}{% for interface in lagopus.rawsock_interfaces %}
 interface {{ interface.name }} create -type ethernet-rawsock -device {{ interface.device }}
-{% endfor %}
+{% endfor %}{% endif %}
 
 {% for bridge in lagopus.bridges %}
 {% for port in bridge.ports %}
@@ -26,7 +25,7 @@ bridge {{ bridge.name }} create -controller {{ bridge.controller }} {% for port 
 bridge {{ bridge.name }} enable
 {% endfor %}
 
-{% for flow in lagopus.flows -%}
+{% if lagopus.flows is defined %}{% for flow in lagopus.flows -%}
 flow {{ flow.bridge }} add priority={{ flow.priority }}
 {%- for m in flow.match %} {{ m }}{%- endfor %}
 {%- if flow.apply_actions is defined %} apply_actions={{ csv( flow.apply_actions ) }}{% endif %}
@@ -34,4 +33,4 @@ flow {{ flow.bridge }} add priority={{ flow.priority }}
 {%- if flow.goto_table is defined %} goto_table={{ flow.goto_table }}{% endif %}
 {%- if flow.meter is defined %} meter={{ meter }}{% endif %}
 
-{% endfor %}
+{% endfor %}{% endif %}

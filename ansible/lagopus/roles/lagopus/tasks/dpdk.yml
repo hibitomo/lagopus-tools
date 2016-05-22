@@ -36,6 +36,7 @@
   changed_when: no
   failed_when: no
   become: yes
+  when: dpdk_ifaces.physical is defined
 
 - name: bind dpdk
   shell: "{{ lagopus.src_dir }}/src/dpdk/tools/dpdk_nic_bind.py -b igb_uio {{ item }}"
@@ -43,3 +44,4 @@
   changed_when: no
   failed_when: no
   become: yes
+  when: dpdk_ifaces.physical is defined

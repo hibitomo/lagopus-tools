@@ -19,7 +19,6 @@ dpdk_ifaces:
       socket: /tmp/sock0
     - id: 1
       socket: /tmp/sock1
-  pipe: []
   pysical:
      - 0000:05:00.0
 
@@ -81,8 +80,6 @@ lagopus:
     - name: interface02
       port_number: 2
 
-  rawsock_interfaces: []
-
   bridges:
     - name: bridge01
       controller: controller01
@@ -94,5 +91,3 @@ lagopus:
           interface: interface00
         - OF_port: 3
           interface: interface01
-
-  flows: []
