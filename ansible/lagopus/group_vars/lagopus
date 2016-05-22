@@ -72,9 +72,11 @@ lagopus:
       priority: 100
       match:
         - in_port=1
-      apply_actions: "output:2"
+      apply_actions:
+        - "output:2"
     - bridge: bridge01
       priority: 100
       match:
         - in_port=2
-      apply_actions: "output:1"
+      apply_actions:
+        - "output:1"

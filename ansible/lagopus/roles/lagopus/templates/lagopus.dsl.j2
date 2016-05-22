@@ -1,3 +1,10 @@
+{% macro csv(list) -%}
+  {% for value in list -%}
+    {% if comma_flag is defined %},{% endif %}{{ value }}
+    {%- set comma_flag = true -%}
+  {%- endfor%}
+{%- endmacro %}
+
 {% for controller in lagopus.controllers %}
 channel {{ controller.name }}-channel create -dst-addr {{ controller.channel.dst_addr }} -protocol {{ controller.channel.protocol }}
 controller {{ controller.name }} create -channel {{ controller.name }}-channel -role {{ controller.role }} -connection-type {{ controller.connection_type }}
@@ -19,6 +26,12 @@ bridge {{ bridge.name }} create -controller {{ bridge.controller }} {% for port 
 bridge {{ bridge.name }} enable
 {% endfor %}
 
-{% for flow in lagopus.flows %}
-flow {{ flow.bridge }} add priority={{ flow.priority }} {% for m in flow.match %}{{ m }} {% endfor %}apply_actions={{flow.apply_actions}}
+{% for flow in lagopus.flows -%}
+flow {{ flow.bridge }} add priority={{ flow.priority }}
+{%- for m in flow.match %} {{ m }}{%- endfor %}
+{%- if flow.apply_actions is defined %} apply_actions={{ csv( flow.apply_actions ) }}{% endif %}
+{%- if flow.write_actions is defined %} write_actions={{ csv( flow.write_actions ) }}{% endif %}
+{%- if flow.goto_table is defined %} goto_table={{ flow.goto_table }}{% endif %}
+{%- if flow.meter is defined %} meter={{ meter }}{% endif %}
+
 {% endfor %}
