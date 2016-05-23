@@ -77,7 +77,7 @@
 - file: path=/mnt/huge state=directory owner=root group=root mode=0755 recurse=yes
   become: yes
 - name: Mount hugepage
-  mount: name=/mnt/huge fstype=hugelbfs src=nodev state=present
+  mount: name=/mnt/huge fstype=hugetlbfs src=nodev state=present
   become: yes
 
 ## setup DPDK
