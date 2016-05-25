@@ -22,8 +22,8 @@ hugepage:
 #    - id: 0
 #    - id: 1
 #  pysical:
-#     - 0000:05:00.0
-#     - 0000:05:00.1
+#    - 0000:05:00.0
+#    - 0000:05:00.1
 
 lagopus:
   compile: true
@@ -32,6 +32,15 @@ lagopus:
   configure_option:
   make_option: gcc-full-opt -j 4
   src_dir: /usr/local/src/lagopus
+
+  run_script: ~/run_lagopus.sh
+  dpdk: true
+  cpumask: e
+  memory_channels: 4
+  portmask: 3
+  allocate_hugepages: 256 # MB
+  dsl: /usr/local/etc/lagopus/lagopus.dsl
+  log: /tmp/lagopus.log
 
   controllers:
     - name: controller01

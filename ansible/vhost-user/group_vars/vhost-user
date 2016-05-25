@@ -1,11 +1,9 @@
 ---
 # The variables file used by the playbooks in the lagopus with vhost-user group
 
-run_lagpous_script: ~/run_lagopus.sh
-run_qemu_script: ~/run_qemu.sh
-
 hugepage:
   setup: true
+  grub_update: false
   size: 2048kB # or 1048576kB
   nodes:
     - id: 0
@@ -21,6 +19,8 @@ dpdk_ifaces:
       socket: /tmp/sock1
   pysical:
      - 0000:05:00.0
+
+run_qemu_script: ~/run_qemu.sh
 
 qemu_option:
   - id: 0
@@ -57,6 +57,8 @@ lagopus:
   configure_option:
   make_option: gcc-full-opt -j 4
   src_dir: /usr/local/src/lagopus
+
+  run_script: ~/run_lagopus.sh
   cpumask: e
   memory_channels: 4
   portmask: 7

@@ -125,3 +125,11 @@
     src: lagopus.dsl.j2
     dest: /usr/local/etc/lagopus/lagopus.dsl
   become: yes
+
+## make run script
+
+- name: make script to run lagopus
+  template:
+    src: run_lagopus.sh.j2
+    dest: "{{ lagopus.run_script }}"
+  when: lagopus.run_script is defined
