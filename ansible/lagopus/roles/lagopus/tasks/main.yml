@@ -71,14 +71,47 @@
   with_items: "{{ hugepage.nodes }}"
   register: result
   become: yes
-  when: hugepage.setup == true
   changed_when: result.stdout != "{{ item.number_of_pages }}"
+  when: hugepage.setup == true and hugepage.grub_update != true
+
+- name: Setup grub
+  lineinfile:
+    dest: /etc/default/grub
+    line: GRUB_CMDLINE_LINUX_DEFAULT="default_hugepagesz={{ hugepage.size }} hugepagesz={{ hugepage.size }} hugepages={{ hugepage.total }}"
+    state: present
+    backrefs: yes
+    regexp: '^GRUB_CMDLINE_LINUX_DEFAULT=.*'
+  register: update_grub
+  become: yes
+  when: hugepage.setup == true and hugepage.grub_update == true
 
 - file: path=/mnt/huge state=directory owner=root group=root mode=0755 recurse=yes
   become: yes
 - name: Mount hugepage
   mount: name=/mnt/huge fstype=hugetlbfs src=nodev state=present
   become: yes
+
+- name: update-grub
+  shell:
+    update-grub
+  become: yes
+  when: update_grub|changed
+
+- name: restart machine
+  shell: reboot "Ansible rebooting system" &
+  become: yes
+  when: update_grub|changed
+
+- name: Wait for SSH port down
+  local_action: wait_for host={{ inventory_hostname }} port=22 state=stopped
+  when: update_grub|changed
+
+- name: Wait for SSH port up
+  local_action: wait_for host={{ inventory_hostname }} port=22 state=started delay=30
+  when: update_grub|changed
+
+
+
 
 ## setup DPDK
 

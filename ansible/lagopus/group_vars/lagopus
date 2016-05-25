@@ -3,7 +3,9 @@
 
 hugepage:
   setup: true
+  grub_update: false
   size: 2048kB # or 1048576kB
+  total: 1024
   nodes:
     - id: 0
       number_of_pages: 512
