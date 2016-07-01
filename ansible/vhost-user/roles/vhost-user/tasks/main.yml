@@ -8,12 +8,6 @@
     - qemu-system-x86
   become: yes
 
-- name: make script to run lagopus
-  template:
-    src: run_lagopus.sh.j2
-    dest: "{{ lagpous.run_script }}"
-  when: lagopus.run_script is defined
-
 - name: make script to run qemu with vhost-user
   template:
     src: run_qemu.sh.j2

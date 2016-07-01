@@ -5,6 +5,7 @@ hugepage:
   setup: true
   grub_update: false
   size: 2048kB # or 1048576kB
+  total: 512
   nodes:
     - id: 0
       number_of_pages: 512
@@ -35,7 +36,7 @@ qemu_option:
     drive:
       - id: 0
         image: ~/images/ubuntu0.img
-    option: "-M pc-1.9 -cpu host -enable-kvm -numa node,memdev=mem"
+    option: "-M pc-1.0 -cpu host -enable-kvm -numa node,memdev=mem"
   - id: 1
     core: 2
     memory: 1024
@@ -48,7 +49,7 @@ qemu_option:
     drive:
       - id: 0
         image: ~/images/ubuntu1.img
-    option: "-M pc-1.9 -cpu host -enable-kvm -numa node,memdev=mem"
+    option: "-M pc-1.0 -cpu host -enable-kvm -numa node,memdev=mem"
 
 lagopus:
   compile: true
