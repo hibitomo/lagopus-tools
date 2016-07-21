@@ -62,7 +62,6 @@ lagopus:
   run_script: ~/run_lagopus.sh
   cpumask: e
   memory_channels: 4
-  portmask: 7
   allocate_hugepages: 1024 # MB
   dsl: /usr/local/etc/lagopus/lagopus.dsl
   log: /tmp/lagopus.log

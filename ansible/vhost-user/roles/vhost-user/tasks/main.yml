@@ -1,4 +1,4 @@
-- name: install qemu
+- name: install qemu and libvirt
   apt:
     name: "{{ item }}"
     update_cache: yes
@@ -6,6 +6,7 @@
   with_items:
     - qemu-kvm
     - qemu-system-x86
+    - libvirt-bin
   become: yes
 
 - name: make script to run qemu with vhost-user
