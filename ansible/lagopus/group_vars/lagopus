@@ -22,9 +22,11 @@ hugepage:
 #    - id: 0
 #    - id: 1
 #      attach: 0
-#  pysical:
-#    - 0000:05:00.0
-#    - 0000:05:00.1
+#  physical:
+#    - dev_name: eth1
+#      pci_addr: 0000:05:00.0
+#    - dev_name: eth2
+#      pci_addr: 0000:05:00.1
 
 lagopus:
   compile: true
@@ -38,7 +40,6 @@ lagopus:
   dpdk: true
   cpumask: e
   memory_channels: 4
-  portmask: 3
   allocate_hugepages: 256 # MB
   dsl: /usr/local/etc/lagopus/lagopus.dsl
   log: /tmp/lagopus.log

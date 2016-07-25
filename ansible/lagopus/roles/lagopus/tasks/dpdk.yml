@@ -31,16 +31,16 @@
   become: yes
 
 - name: link down intarfaces to bind dpdk
-  shell: "ip link set down dev {{ item }}"
-  with_items: dpdk_ifaces.physical
+  shell: "ip link set down dev {{ item.dev_name }}"
+  with_items: "{{ dpdk_ifaces.physical }}"
   changed_when: no
   failed_when: no
   become: yes
   when: dpdk_ifaces.physical is defined
 
 - name: bind dpdk
-  shell: "{{ lagopus.src_dir }}/src/dpdk/tools/dpdk_nic_bind.py -b igb_uio {{ item }}"
-  with_items: dpdk_ifaces.physical
+  shell: "{{ lagopus.src_dir }}/src/dpdk/tools/dpdk_nic_bind.py -b igb_uio {{ item.pci_addr }}"
+  with_items: "{{ dpdk_ifaces.physical }}"
   changed_when: no
   failed_when: no
   become: yes

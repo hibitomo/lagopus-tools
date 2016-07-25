@@ -111,8 +111,6 @@
   when: update_grub|changed
 
 
-
-
 ## setup DPDK
 
 - include: dpdk.yml

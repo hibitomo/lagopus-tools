@@ -18,8 +18,9 @@ dpdk_ifaces:
       socket: /tmp/sock0
     - id: 1
       socket: /tmp/sock1
-  pysical:
-     - 0000:05:00.0
+  physical:
+    - dev_name: eth1
+    - pci_addr: 0000:05:00.0
 
 run_qemu_script: ~/run_qemu.sh
 

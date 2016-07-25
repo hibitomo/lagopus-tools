@@ -11,6 +11,14 @@
     - virtinst
   become: yes
 
+- name: purge apparmor
+  apt:
+    name: "{{ item }}"
+    purge: yes
+  with_items:
+    - apparmor
+  become: yes
+
 - name: make script to run qemu with vhost-user
   template:
     src: run_qemu.sh.j2
