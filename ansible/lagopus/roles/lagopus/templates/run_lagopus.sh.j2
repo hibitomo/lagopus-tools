@@ -1,15 +1,15 @@
 #!/bin/bash
 
-{% for vhost_user in dpdk_ifaces.vhost_user %}
+{% if vhost_user is defined %}{% for vhost_user in dpdk_ifaces.vhost_user %}
 sudo rm {{ vhost_user.socket }}
-{% endfor %}
+{% endfor %}{% endif %}
 
 sudo lagopus -C {{ lagopus.dsl }} -l {{ lagopus.log }} \
   -- -c {{ lagopus.cpumask }} -n {{ lagopus.memory_channels }} -m {{ lagopus.allocate_hugepages }} \
-  {% if dpdk_ifaces.vhost_user is defined %}{% for vhost_user in dpdk_ifaces.vhost_user %}
+  {% if dpdk_iface is defined %}{% if dpdk_ifaces.vhost_user is defined %}{% for vhost_user in dpdk_ifaces.vhost_user %}
   --vdev 'eth_vhost{{ vhost_user.id }},iface={{ vhost_user.socket }}' \
   {% endfor %}{% endif %}
   {% if dpdk_ifaces.pipe is defined %}{% for pipe in dpdk_ifaces.pipe %}
   --vdev 'eth_vhost{{ pipe.id }}{%- if pipe.attach is defined%},attach=eth_pipe{{ pipe.attach }}{%- endif %}' \
-  {% endfor %}{% endif %}
+  {% endfor %}{% endif %}{% endif %}
 -- \
