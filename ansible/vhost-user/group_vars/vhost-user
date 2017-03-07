@@ -54,7 +54,7 @@ qemu_option:
 
 lagopus:
   compile: true
-  repository: https://github.com/lagopus/lagopus-next-virtio
+  repository: https://github.com/lagopus/lagopus
   version: master
   configure_option:
   make_option: gcc-full-opt -j 4
